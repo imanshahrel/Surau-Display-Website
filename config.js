@@ -3,7 +3,7 @@
 // ============================================================
 window.CONFIG = {
   // Name shown beside the logo in the top ribbon
-  surauName: "Nama Surau Anda",
+  surauName: "Selamat Datang ke Surau Ar-Raudhah TPSP",
 
   // Logo shown in the ribbon. Replace assets/logo.svg with your own file,
   // or point this to e.g. "assets/logo.png"
@@ -12,8 +12,8 @@ window.CONFIG = {
   // Prayer times location (latitude / longitude of the surau).
   // Default below is around Sepang, Selangor. Get yours from Google Maps
   // (right-click the surau -> click the coordinates to copy them).
-  latitude: 2.7,
-  longitude: 101.7,
+  latitude: 2.626569591839776,
+  longitude: 101.70728155767213,
 
   // Calculation method 17 = JAKIM (Malaysia). Leave as is.
   method: 17,
