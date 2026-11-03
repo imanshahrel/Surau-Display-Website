@@ -7,7 +7,7 @@ window.CONFIG = {
 
   // Logo shown in the ribbon. Replace assets/logo.svg with your own file,
   // or point this to e.g. "assets/logo.png"
-  logo: "assets/logo.svg",
+  logo: "assets/suraulogo.png",
 
   // Prayer times location (latitude / longitude of the surau).
   // Default below is around Sepang, Selangor. Get yours from Google Maps
