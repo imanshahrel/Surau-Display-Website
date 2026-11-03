@@ -2,7 +2,12 @@
   "seconds": 12,
   "slides": [
     "slides/slide1.png",
-    "slides/slide2.svg",
-    "slides/slide3.svg"
+    "slides/slide2.png",
+    "slides/slide3.png",
+    "slides/slide4.png",
+    "slides/slide5.png",
+    "slides/slide6.png",
+    "slides/slide7.png",
+    "slides/slide8.png"
   ]
 }
