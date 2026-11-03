@@ -3,7 +3,7 @@
 // ============================================================
 window.CONFIG = {
   // Name shown beside the logo in the top ribbon
-  surauName: "Selamat Datang ke Surau Ar-Raudhah TPSP",
+  surauName: "Selamat Datang ke Surau Ar-Raudhah Taman Pantai Sepang Putra",
 
   // Logo shown in the ribbon. Replace assets/logo.svg with your own file,
   // or point this to e.g. "assets/logo.png"
