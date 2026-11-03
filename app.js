@@ -149,14 +149,20 @@
   }
 
   // ---------- Alerts ----------
-  function updateAlert(k) {
+    function updateAlert(k) {
     const box = $("alert");
+    const card = box.querySelector(".alert-card");
+    const icon = $("alertIcon");
     if (!today) { box.hidden = true; return; }
     const nowSec = k.h * 3600 + k.mi * 60 + k.s;
     const pre = (C.alertMinutesBefore || 10) * 60;
-    const post = (C.alertAtTimeMinutes || 5) * 60;
+    const post = (C.alertAtTimeMinutes || 2) * 60;
+    const iq = (C.iqamahCountdownMinutes || 10) * 60;
+    icon.hidden = true;
+    card.classList.remove("iqamah");
     for (const p of PRAYERS) {
       const t = today[p.key] * 60;
+      // 1) countdown to prayer time
       if (nowSec >= t - pre && nowSec < t) {
         const left = t - nowSec;
         $("alertKicker").textContent = `${Math.ceil(left / 60)} minit lagi menjelang waktu`;
@@ -165,10 +171,22 @@
         box.hidden = false;
         return;
       }
+      // 2) prayer time has entered
       if (nowSec >= t && nowSec < t + post) {
         $("alertKicker").textContent = "Telah masuk waktu";
         $("alertTitle").textContent = p.label;
-        $("alertSub").textContent = "Marilah menunaikan solat, luruskan dan rapatkan saf";
+        $("alertSub").textContent = "Marilah menunaikan solat";
+        box.hidden = false;
+        return;
+      }
+      // 3) countdown to iqamah
+      if (nowSec >= t + post && nowSec < t + post + iq) {
+        const left = t + post + iq - nowSec;
+        $("alertKicker").textContent = `${Math.ceil(left / 60)} minit lagi menjelang iqamah ${p.label}`;
+        $("alertTitle").textContent = "Sila matikan telefon bimbit anda";
+        $("alertSub").textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)}`;
+        icon.hidden = false;
+        card.classList.add("iqamah");
         box.hidden = false;
         return;
       }
