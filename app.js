@@ -165,9 +165,9 @@
       // 1) countdown to prayer time
       if (nowSec >= t - pre && nowSec < t) {
         const left = t - nowSec;
-        $("alertKicker").textContent = `${Math.ceil(left / 60)} minit lagi menjelang waktu` · p.label; 
-        $("alertTitle").textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)}`; 
-        $("alertSub").textContent = `${fmt12(today[p.key])}`; 
+        $("alertKicker").textContent = `${Math.ceil(left / 60)} minit lagi menjelang waktu`;
+        $("alertTitle").textContent = p.label; 
+        $("alertSub").textContent = `${fmt12(today[p.key])} · ${pad(Math.floor(left / 60))}:${pad(left % 60)}`; 
         box.hidden = false;
         return;
       }
