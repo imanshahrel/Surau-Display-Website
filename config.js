@@ -28,7 +28,8 @@ window.CONFIG = {
 
   // Alerts
   alertMinutesBefore: 10,   // "10 minutes to prayer" alert starts this early
-  alertAtTimeMinutes: 5,    // "Prayer time has entered" alert stays this long
+  alertAtTimeMinutes: 2,          // "Prayer time has entered" alert stays this long
+  iqamahCountdownMinutes: 10,     // iqamah countdown, starts right after the alert above
 
   // Slideshow: seconds each slide is shown (can be overridden in slides.json)
   slideSeconds: 12,
