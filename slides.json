@@ -1,0 +1,8 @@
+{
+  "seconds": 12,
+  "slides": [
+    "slides/slide1.svg",
+    "slides/slide2.svg",
+    "slides/slide3.svg"
+  ]
+}

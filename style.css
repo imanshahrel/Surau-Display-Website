@@ -1,0 +1,218 @@
+:root {
+  --bg-1: #0d2219;
+  --bg-2: #17382b;
+  --panel: rgba(255, 255, 255, 0.04);
+  --gold: #e9d08b;
+  --gold-dim: rgba(233, 208, 139, 0.45);
+  --text: #f4f1e6;
+  --text-dim: rgba(244, 241, 230, 0.7);
+  --gap: 1.2vh;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-1);
+  color: var(--text);
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  cursor: none;
+}
+
+.screen {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 6.5vh 1fr 12vh;
+  gap: var(--gap);
+  padding: var(--gap);
+  background:
+    radial-gradient(ellipse at 20% 0%, var(--bg-2), transparent 60%),
+    linear-gradient(160deg, var(--bg-2), var(--bg-1));
+}
+
+/* ---------- Ribbon ---------- */
+.ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5vh;
+  border-radius: 1.2vh;
+  background: linear-gradient(90deg, transparent, rgba(233, 208, 139, 0.14), transparent);
+  border-top: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
+}
+.ribbon-logo { height: 80%; width: auto; object-fit: contain; }
+.ribbon-name {
+  font-size: min(3vh, 2vw);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ---------- Main ---------- */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 27vw;
+  gap: var(--gap);
+  min-height: 0;
+}
+
+.panel {
+  position: relative;
+  min-height: 0;
+  border-radius: 2vh;
+  border: 0.3vh solid var(--gold-dim);
+  background: var(--panel);
+  overflow: hidden;
+}
+
+/* ---------- Slideshow ---------- */
+.slideshow { background: #050d09; }
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.slide.active { opacity: 1; }
+.slide::before {
+  content: "";
+  position: absolute;
+  inset: -5%;
+  background: var(--img) center / cover no-repeat;
+  filter: blur(2.5vh) brightness(0.45);
+}
+.slide img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.slide-empty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-dim);
+  font-size: 3vh;
+}
+
+/* ---------- Info panel ---------- */
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 2vh 1.5vw;
+  text-align: center;
+}
+
+.clock { display: flex; align-items: baseline; justify-content: center; gap: 0.6vh; line-height: 1; }
+.clock-time {
+  font-size: min(13vh, 7vw);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.clock-ampm {
+  font-size: min(4.5vh, 2.4vw);
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.dates { line-height: 1.35; }
+.date-day { font-size: min(3.6vh, 1.9vw); font-weight: 600; color: var(--gold); }
+.date-line { font-size: min(3vh, 1.6vw); color: var(--text-dim); }
+
+/* ---------- Prayer times ---------- */
+.prayers {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vh;
+  padding-top: 1.6vh;
+  border-top: 1px solid var(--gold-dim);
+}
+.prayer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.9vh 1.2vw;
+  border-radius: 1vh;
+  font-size: min(3.4vh, 1.8vw);
+  color: var(--text-dim);
+  border: 1px solid transparent;
+  transition: background 0.4s, color 0.4s;
+}
+.prayer .name { font-weight: 500; }
+.prayer .time { font-weight: 600; font-variant-numeric: tabular-nums; }
+.prayer.passed { opacity: 0.45; }
+.prayer.next {
+  color: #10281f;
+  background: var(--gold);
+  border-color: var(--gold);
+  opacity: 1;
+}
+.prayer.next .name, .prayer.next .time { font-weight: 700; }
+
+/* ---------- Ticker ---------- */
+.ticker {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border-radius: 2vh;
+  border: 0.3vh solid var(--gold-dim);
+  background: var(--panel);
+}
+.ticker-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: scroll linear infinite;
+}
+.ticker-set { display: inline-flex; align-items: center; }
+.ticker-item {
+  font-size: min(5vh, 2.6vw);
+  font-weight: 500;
+  padding: 0 2vw;
+}
+.ticker-sep { color: var(--gold); font-size: min(4vh, 2vw); }
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ---------- Alert overlay ---------- */
+.alert {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 14, 10, 0.88);
+  backdrop-filter: blur(0.8vh);
+}
+.alert[hidden] { display: none; }
+.alert-card {
+  width: 82%;
+  padding: 7vh 4vw;
+  text-align: center;
+  border-radius: 4vh;
+  border: 0.5vh solid var(--gold);
+  background: linear-gradient(160deg, var(--bg-2), var(--bg-1));
+  box-shadow: 0 0 6vh rgba(233, 208, 139, 0.3);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+.alert-kicker { font-size: min(4.5vh, 2.4vw); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.alert-title { margin: 2vh 0; font-size: min(17vh, 9vw); font-weight: 700; line-height: 1.05; }
+.alert-sub { font-size: min(6vh, 3.2vw); color: var(--text-dim); font-variant-numeric: tabular-nums; }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 4vh rgba(233, 208, 139, 0.25); }
+  50%      { box-shadow: 0 0 9vh rgba(233, 208, 139, 0.55); }
+}

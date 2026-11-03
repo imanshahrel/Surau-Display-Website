@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paparan Surau</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="screen">
+
+    <!-- Top ribbon: logo + name -->
+    <header class="ribbon">
+      <img id="logo" class="ribbon-logo" alt="">
+      <span id="surauName" class="ribbon-name"></span>
+    </header>
+
+    <main class="main">
+      <!-- Slideshow -->
+      <section class="panel slideshow" id="slideshow" aria-label="Slaid"></section>
+
+      <!-- Clock, dates, prayer times -->
+      <aside class="panel info">
+        <div class="clock">
+          <span id="clockTime" class="clock-time">--:--</span>
+          <span id="clockAmpm" class="clock-ampm">--</span>
+        </div>
+        <div class="dates">
+          <div id="dateDay" class="date-day"></div>
+          <div id="dateGreg" class="date-line"></div>
+          <div id="dateHijri" class="date-line"></div>
+        </div>
+        <ul class="prayers" id="prayers"></ul>
+      </aside>
+    </main>
+
+    <!-- Scrolling text -->
+    <footer class="ticker">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </footer>
+
+    <!-- Prayer alert overlay -->
+    <div class="alert" id="alert" hidden>
+      <div class="alert-card">
+        <div id="alertKicker" class="alert-kicker"></div>
+        <div id="alertTitle" class="alert-title"></div>
+        <div id="alertSub" class="alert-sub"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
