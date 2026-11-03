@@ -168,7 +168,7 @@
       if (nowSec >= t && nowSec < t + post) {
         $("alertKicker").textContent = "Telah masuk waktu";
         $("alertTitle").textContent = p.label;
-        $("alertSub").textContent = "Marilah menunaikan solat, lurus dan rapatkan saf";
+        $("alertSub").textContent = "Marilah menunaikan solat, luruskan dan rapatkan saf";
         box.hidden = false;
         return;
       }
