@@ -183,8 +183,8 @@
       if (nowSec >= t + post && nowSec < t + post + iq) {
         const left = t + post + iq - nowSec;
         $("alertKicker").textContent = `${Math.ceil(left / 60)} minit lagi menjelang iqamah ${p.label}`;
-        $("alertTitle").textContent = "Sila matikan telefon bimbit anda";
-        $("alertSub").textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)}`;
+        $("alertTitle").textContent = `${pad(Math.floor(left / 60))}:${pad(left % 60)}`;
+        $("alertSub").textContent = "Sila matikan telefon bimbit anda"; 
         icon.hidden = false;
         card.classList.add("iqamah");
         box.hidden = false;
