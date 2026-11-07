@@ -190,7 +190,7 @@ html, body {
 
 /* ---------- Alert overlay ---------- */
 .alert {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 10;
   display: grid;
@@ -220,3 +220,42 @@ html, body {
 .alert-icon[hidden] { display: none; }
 .alert-card.iqamah { padding: 4vh 4vw; }
 .alert-card.iqamah .alert-title { font-size: min(10vh, 5.5vw); line-height: 1.15; }
+
+/* PHONE / PORTRAIT: stack the panels and allow scrolling */
+@media (max-width: 900px), (max-aspect-ratio: 1/1) {
+  html, body { height: auto; overflow: auto; cursor: auto; }
+  .screen {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    grid-template-rows: auto auto auto;
+    gap: 12px;
+    padding: 12px;
+  }
+  .ribbon { height: 56px; }
+  .ribbon-name { font-size: clamp(13px, 3.8vw, 20px); }
+
+  .main { grid-template-columns: 1fr; gap: 12px; }
+  .slideshow { aspect-ratio: 16 / 9; }
+  .panel, .ticker { border-width: 2px; border-radius: 16px; }
+
+  .info { padding: 20px 16px; gap: 18px; justify-content: flex-start; }
+  .clock-time { font-size: clamp(64px, 24vw, 130px); }
+  .clock-ampm { font-size: clamp(20px, 6vw, 40px); }
+  .date-day  { font-size: clamp(18px, 5vw, 30px); }
+  .date-line { font-size: clamp(15px, 4.2vw, 26px); }
+  .prayers { padding-top: 14px; gap: 6px; }
+  .prayer { font-size: clamp(17px, 4.8vw, 30px); padding: 10px 14px; border-radius: 10px; }
+
+  .ticker { height: 72px; }
+  .ticker-item { font-size: clamp(18px, 5vw, 28px); padding: 0 24px; }
+  .ticker-sep { font-size: 20px; }
+
+  .alert-card { width: 92%; padding: 32px 16px; border-radius: 24px; }
+  .alert-kicker { font-size: clamp(13px, 3.6vw, 22px); }
+  .alert-title { font-size: clamp(48px, 17vw, 110px); margin: 14px 0; }
+  .alert-sub { font-size: clamp(16px, 4.8vw, 28px); }
+  .alert-icon { width: clamp(64px, 20vw, 110px); height: clamp(64px, 20vw, 110px); margin-bottom: 12px; }
+  .alert-card.iqamah { padding: 24px 16px; }
+  .alert-card.iqamah .alert-title { font-size: clamp(30px, 9.5vw, 64px); }
+}
