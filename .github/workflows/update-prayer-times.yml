@@ -1,0 +1,44 @@
+name: Update prayer times
+
+on:
+  schedule:
+    - cron: "30 16 1 * *"    # once a month (2nd of the month, 12:30 AM Malaysia time)
+    - cron: "35 16 31 12 *"  # just after New Year in Malaysia, picks up the new year
+  workflow_dispatch:          # lets you press "Run workflow" by hand
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download this year's times for zone SGR01 from e-solat
+        run: |
+          curl -fsSL --retry 3 --retry-delay 10 -A "Mozilla/5.0" \
+            "https://www.e-solat.gov.my/index.php?r=esolatApi/takwimsolat&period=year&zone=SGR01" \
+            -o new.json
+
+      - name: Check it and save as prayer-times.json
+        run: |
+          python3 - <<'PY'
+          import json, datetime
+          data = json.load(open("new.json"))
+          rows = data.get("prayerTime", [])
+          assert len(rows) >= 360, f"Only {len(rows)} days received, not saving"
+          assert all(r.get("fajr") and r.get("isha") and r.get("date") for r in rows), "Missing fields"
+          data["fetched"] = datetime.date.today().isoformat()
+          json.dump(data, open("prayer-times.json", "w"), ensure_ascii=False)
+          print("OK", len(rows), "days")
+          PY
+          rm new.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add prayer-times.json
+          git diff --cached --quiet || git commit -m "Update prayer times"
+          git push
