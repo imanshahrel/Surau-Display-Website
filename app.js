@@ -48,63 +48,90 @@
     return `${p.day} ${HIJRI_MONTHS[parseInt(p.month, 10) - 1]} ${year}H`;
   }
 
-  // ---------- Prayer times (aladhan.com, JAKIM method, cached per month) ----------
-  const monthCache = {}; // "2026-11" -> { 1: {subuh:"05:49",...}, ... }
-  const pad = (n) => String(n).padStart(2, "0");
-
-  async function loadMonth(y, mo) {
-    const key = `${y}-${pad(mo)}`;
-    if (monthCache[key]) return monthCache[key];
-    const lsKey = `prayer-${C.latitude}-${C.longitude}-${C.method}-${key}`;
-    try {
-      const saved = JSON.parse(localStorage.getItem(lsKey) || "null");
-      if (saved) return (monthCache[key] = saved);
-    } catch (e) {}
-    const url = `https://api.aladhan.com/v1/calendar/${y}/${mo}?latitude=${C.latitude}&longitude=${C.longitude}&method=${C.method}&timezonestring=${TZ}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const json = await res.json();
-    const out = {};
-    json.data.forEach((row, i) => {
-      const day = {};
-      PRAYERS.forEach((p) => { day[p.key] = row.timings[p.api].slice(0, 5); });
-      out[i + 1] = day;
-    });
-    try { localStorage.setItem(lsKey, JSON.stringify(out)); } catch (e) {}
-    return (monthCache[key] = out);
+ // e-solat gives the official Malaysian Hijri date as "1448-05-27"
+  function hijriFromEsolat(h) {
+    const m = String(h).match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    return m ? `${parseInt(m[3], 10)} ${HIJRI_MONTHS[parseInt(m[2], 10) - 1]} ${m[1]}H` : "";
   }
 
-  let today = null; // { subuh: minutesOfDay, ... , raw: {...} }
+  // ---------- Prayer times (official JAKIM e-solat data, read from prayer-times.json) ----------
+  const pad = (n) => String(n).padStart(2, "0");
+  const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, mei: 5, jun: 6, jul: 7, aug: 8, ogo: 8, sep: 9, oct: 10, okt: 10, nov: 11, dec: 12, dis: 12 };
+  const FIELDS = {
+    subuh: ["fajr", "subuh"], zohor: ["dhuhr", "zohor"], asar: ["asr", "asar"],
+    maghrib: ["maghrib"], isyak: ["isha", "isyak"]
+  };
+
+  // Accepts "07-Nov-2026", "2026-11-07" or "07/11/2026" -> "2026-11-07"
+  function dateKey(s) {
+    s = String(s).trim();
+    let m;
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+    if ((m = s.match(/^(\d{1,2})[-\/ ]([A-Za-z]{3,})[-\/ ](\d{4})/))) {
+      const mo = MON[m[2].slice(0, 3).toLowerCase()];
+      if (mo) return `${m[3]}-${pad(mo)}-${pad(m[1])}`;
+    }
+    if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))) return `${m[3]}-${pad(m[2])}-${pad(m[1])}`;
+    return null;
+  }
+
+  async function loadTable() {
+    const res = await fetch("prayer-times.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("prayer-times.json HTTP " + res.status);
+    const json = await res.json();
+    const rows = Array.isArray(json) ? json : (json.prayerTime || json.data);
+    if (!Array.isArray(rows)) throw new Error("prayer-times.json: no prayerTime list found");
+    const out = {};
+    rows.forEach((row) => {
+      const key = dateKey(row.date);
+      if (!key) return;
+      const day = { hijri: row.hijri || null };
+      for (const k in FIELDS) {
+        const v = FIELDS[k].map((n) => row[n]).find(Boolean);
+        if (v) day[k] = String(v).slice(0, 5);   // "13:11:00" -> "13:11"
+      }
+      out[key] = day;
+    });
+    return out;
+  }
+
+  let today = null; // { subuh: minutesOfDay, ... , hijri: "1448-05-27" or null }
   let todayKey = "";
+  let busy = false;
+  let nextTry = 0;
 
   async function ensureToday() {
     const k = klParts(now());
-    const key = `${k.y}-${k.mo}-${k.d}`;
-    if (key === todayKey && today) return;
+    const key = `${k.y}-${pad(k.mo)}-${pad(k.d)}`;
+    if ((key === todayKey && today) || busy || Date.now() < nextTry) return;
+    busy = true;
     try {
-      const month = await loadMonth(k.y, k.mo);
-      const raw = month[k.d];
-      const t = { raw: {} };
+      const table = await loadTable();
+      let row = table[key];
+      const exact = !!row;
+      if (!exact) {
+        // Date missing (e.g. new year not published yet): use the latest earlier day, times differ by ~1 minute
+        const earlier = Object.keys(table).filter((d) => d < key).sort().pop();
+        if (!earlier) throw new Error("No prayer times for " + key);
+        console.warn("No entry for " + key + ", using " + earlier);
+        row = table[earlier];
+      }
+      const t = { hijri: exact ? row.hijri : null };
       PRAYERS.forEach((p) => {
-        const [h, m] = raw[p.key].split(":").map(Number);
-        const mins = h * 60 + m + ((C.adjustMinutes && C.adjustMinutes[p.key]) || 0);
-        t[p.key] = mins;
-        t.raw[p.key] = `${pad(Math.floor(mins / 60))}:${pad(mins % 60)}`;
+        const [h, m] = row[p.key].split(":").map(Number);
+        t[p.key] = h * 60 + m + ((C.adjustMinutes && C.adjustMinutes[p.key]) || 0);
       });
       today = t;
       todayKey = key;
       renderPrayers();
-      // Warm up next month's cache near month end
-      if (k.d >= 25) {
-        const nm = k.mo === 12 ? 1 : k.mo + 1;
-        loadMonth(k.mo === 12 ? k.y + 1 : k.y, nm).catch(() => {});
-      }
     } catch (e) {
       console.warn("Prayer times unavailable:", e);
-      setTimeout(ensureToday, 5 * 60 * 1000);
+      nextTry = Date.now() + 60 * 1000;   // retry in a minute
+    } finally {
+      busy = false;
     }
   }
-
+  
   // ---------- Rendering ----------
   function fmt12(mins) {
     const h = Math.floor(mins / 60), m = mins % 60;
@@ -142,8 +169,7 @@
     $("clockAmpm").textContent = k.h >= 12 ? "PM" : "AM";
     $("dateDay").textContent = DAYS[k.wd];
     $("dateGreg").textContent = `${k.d} ${MONTHS[k.mo - 1]} ${k.y}`;
-    $("dateHijri").textContent = hijriString(k.y, k.mo, k.d);
-    ensureToday();
+    $("dateHijri").textContent = (today && today.hijri) ? hijriFromEsolat(today.hijri) : hijriString(k.y, k.mo, k.d);    ensureToday();
     renderPrayers();
     updateAlert(k);
   }
