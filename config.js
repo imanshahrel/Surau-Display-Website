@@ -30,6 +30,8 @@ window.CONFIG = {
   alertMinutesBefore: 10,   // "10 minutes to prayer" alert starts this early
   alertAtTimeMinutes: 2,          // "Prayer time has entered" alert stays this long
   iqamahCountdownMinutes: 10,     // iqamah countdown, starts right after the alert above
+  prayerInProgressMinutes: 15,         // how long the picture stays up after the iqamah countdown
+  prayerImage: "assets/solat.png",     // 1920x1080 picture
 
   // Slideshow: seconds each slide is shown (can be overridden in slides.json)
   slideSeconds: 12,
