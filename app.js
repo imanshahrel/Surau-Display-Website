@@ -6,6 +6,7 @@
 
   const PRAYERS = [
     { key: "subuh",   label: "Subuh",   api: "Fajr" },
+    { key: "syuruk",  label: "Syuruk",  noAlert: true },
     { key: "zohor",   label: "Zohor",   api: "Dhuhr" },
     { key: "asar",    label: "Asar",    api: "Asr" },
     { key: "maghrib", label: "Maghrib", api: "Maghrib" },
@@ -58,7 +59,7 @@
   const pad = (n) => String(n).padStart(2, "0");
   const MON = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, mei: 5, jun: 6, jul: 7, aug: 8, ogo: 8, sep: 9, oct: 10, okt: 10, nov: 11, dec: 12, dis: 12 };
   const FIELDS = {
-    subuh: ["fajr", "subuh"], zohor: ["dhuhr", "zohor"], asar: ["asr", "asar"],
+    subuh: ["fajr", "subuh"], syuruk: ["syuruk"], zohor: ["dhuhr", "zohor"], asar: ["asr", "asar"],
     maghrib: ["maghrib"], isyak: ["isha", "isyak"]
   };
 
@@ -187,6 +188,7 @@
     icon.hidden = true;
     card.classList.remove("iqamah");
     for (const p of PRAYERS) {
+      if (p.noAlert) continue;
       const t = today[p.key] * 60;
       // 1) countdown to prayer time
       if (nowSec >= t - pre && nowSec < t) {
