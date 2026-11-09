@@ -187,6 +187,10 @@
     const iq = (C.iqamahCountdownMinutes || 10) * 60;
     icon.hidden = true;
     card.classList.remove("iqamah");
+    const img = $("alertImage");
+    img.hidden = true;
+    card.hidden = false;
+    const inprog = (C.prayerInProgressMinutes || 15) * 60;
     for (const p of PRAYERS) {
       if (p.noAlert) continue;
       const t = today[p.key] * 60;
@@ -215,6 +219,19 @@
         $("alertSub").textContent = "Sila matikan telefon bimbit anda"; 
         icon.hidden = false;
         card.classList.add("iqamah");
+        box.hidden = false;
+        return;
+      }
+      // 4) prayer in progress: full-screen picture
+      if (nowSec >= t + post + iq && nowSec < t + post + iq + inprog) {
+        if (img.complete && img.naturalWidth > 0) {
+          card.hidden = true;
+          img.hidden = false;
+        } else {   // picture missing: show text instead
+          $("alertKicker").textContent = "Solat sedang berlangsung";
+          $("alertTitle").textContent = p.label;
+          $("alertSub").textContent = "Sila jaga ketenangan";
+        }
         box.hidden = false;
         return;
       }
@@ -316,6 +333,7 @@
   const logo = $("logo");
   logo.src = C.logo;
   logo.onerror = () => { logo.style.display = "none"; };
+  if (C.prayerImage) $("alertImage").src = C.prayerImage;
 
   renderPrayers();
   tick();
