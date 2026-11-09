@@ -259,3 +259,6 @@ html, body {
   .alert-card.iqamah { padding: 24px 16px; }
   .alert-card.iqamah .alert-title { font-size: clamp(30px, 9.5vw, 64px); }
 }
+
+.alert-image { display: block; width: 96vw; height: 96vh; object-fit: contain; border-radius: 2vh; }
+.alert-image[hidden] { display: none; }
