@@ -230,7 +230,7 @@
         } else {   // picture missing: show text instead
           $("alertKicker").textContent = "Solat sedang berlangsung";
           $("alertTitle").textContent = p.label;
-          $("alertSub").textContent = "Sila jaga ketenangan";
+          $("alertSub").textContent = "Sila lurus dan rapatkan saf";
         }
         box.hidden = false;
         return;
