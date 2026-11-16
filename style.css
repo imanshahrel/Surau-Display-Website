@@ -265,6 +265,3 @@ html, body {
 
 /* prayer times use the same font colour as the scrolling text */
 .prayer { color: var(--text); }
-
-/* slides fill the whole slideshow area */
-.slide img { object-fit: cover; }
