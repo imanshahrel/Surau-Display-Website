@@ -1,4 +1,4 @@
 # One message per line. Lines starting with # are ignored.
 # Edit this file on GitHub and the screen updates within a minute, no code needed.
-Test 1
-test 2
+Assalamulaikum
+Selamat Datang Ke Surau ArRaudhah TPSP
