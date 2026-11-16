@@ -262,3 +262,9 @@ html, body {
 
 .alert-image { display: block; width: 96vw; height: 96vh; object-fit: contain; border-radius: 2vh; }
 .alert-image[hidden] { display: none; }
+
+/* prayer times use the same font colour as the scrolling text */
+.prayer { color: var(--text); }
+
+/* slides fill the whole slideshow area */
+.slide img { object-fit: cover; }
